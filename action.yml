@@ -66,8 +66,8 @@ runs:
         while read tag; do
           git fetch upstream "${tag}" &&
           git checkout FETCH_HEAD &&
-          git rm -rf .github/workflows &&
-          mkdir .github/workflows &&
+          git rm -rf --ignore-unmatch .github/workflows &&
+          mkdir -p .github/workflows &&
           echo "${WORKFLOW}" > .github/workflows/crate-dist.yml &&
           git add .github/workflows/crate-dist.yml &&
           git commit -m "Replace workflows" &&
