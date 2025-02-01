@@ -37,11 +37,7 @@ Usage
 
 1. a. If source is on GitHub, fork it.
 
-   b. Otherwise, create a new repository, and mirror the contents over, i.e.::
-
-          git clone --mirror https://example.com/original-repo.git
-          cd original-repo
-          git push --mirror git@github.com:...
+   b. Otherwise, use the "Import repository" function to create it.
 
 2. Get a deployment SSH key. You can either create a dedicated deployment key
    for the repository, or create a bot account with an associated key.
