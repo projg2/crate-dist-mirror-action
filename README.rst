@@ -35,7 +35,8 @@ upstream-repo
 Usage
 -----
 
-1. a. If source is on GitHub, fork it.
+1. a. If source is on GitHub, fork it (include all branches, i.e. uncheck
+      the "Copy the ``main`` branch only" box).
 
    b. Otherwise, use the "Import repository" function to create it.
 
