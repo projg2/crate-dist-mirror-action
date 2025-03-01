@@ -8,6 +8,9 @@ inputs:
   directories:
     description: Directories with Cargo.toml files to process
     default: .
+  tag-filter:
+    description: Bash pattern used to filter processed tags (matched against tag name, without "refs/tags/")
+    default: "*"
   upstream-repo:
     description: URL to fetch upstream repository from (the default is to query GitHub)
 runs:
@@ -65,16 +68,20 @@ runs:
                   dist-filename: ${{ github.event.repository.name }}-@TAG@-crates.tar.xz
         "
         while read tag; do
-          git fetch upstream "${tag}" &&
-          git checkout FETCH_HEAD &&
-          git rm -rf --ignore-unmatch .github/workflows &&
-          mkdir -p .github/workflows &&
-          tag_name=${tag#refs/tags/} &&
-          tag_name=${tag_name//\//-} &&
-          tag_name=${tag_name#${{ github.event.repository.name }}-} &&
-          if [[ ${tag_name} == v[0-9]* ]]; then tag_name=${tag_name#v}; fi &&
-          echo "${WORKFLOW/@TAG@/${tag_name}}" > .github/workflows/crate-dist.yml &&
-          git add .github/workflows/crate-dist.yml &&
-          git commit -m "Replace workflows" &&
+          git fetch upstream "${tag}" || exit 1
+          tag_name=${tag#refs/tags/}
+          if [[ ${tag_name} == ${{ inputs.tag-filter }} ]]; then
+            tag_name=${tag_name//\//-}
+            tag_name=${tag_name#${{ github.event.repository.name }}-}
+            if [[ ${tag_name} == v[0-9]* ]]; then
+              tag_name=${tag_name#v}
+            fi
+            git checkout FETCH_HEAD &&
+            git rm -rf --ignore-unmatch .github/workflows &&
+            mkdir -p .github/workflows &&
+            echo "${WORKFLOW/@TAG@/${tag_name}}" > .github/workflows/crate-dist.yml &&
+            git add .github/workflows/crate-dist.yml &&
+            git commit -m "Replace workflows" || exit 1
+          fi
           git push git@github.com:${{ github.repository }} HEAD:${tag} || exit 1
         done < <(comm -13 our-tags.txt upstream-tags.txt)
