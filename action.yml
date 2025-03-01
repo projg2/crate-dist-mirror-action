@@ -50,7 +50,7 @@ runs:
         on:
           push:
             tags:
-              - '*'
+              - '**'
 
         jobs:
           crate-dist:
@@ -62,13 +62,18 @@ runs:
                 uses: projg2/crate-dist-action@v1
                 with:
                   directories: ${{ inputs.directories }}
+                  dist-filename: ${{ github.event.repository.name }}-@TAG@-crates.tar.xz
         "
         while read tag; do
           git fetch upstream "${tag}" &&
           git checkout FETCH_HEAD &&
           git rm -rf --ignore-unmatch .github/workflows &&
           mkdir -p .github/workflows &&
-          echo "${WORKFLOW}" > .github/workflows/crate-dist.yml &&
+          tag_name=${tag#refs/tags/} &&
+          tag_name=${tag_name//\//-} &&
+          tag_name=${tag_name#${{ github.event.repository.name }}-} &&
+          if [[ ${tag_name} == v[0-9]* ]]; then tag_name=${tag_name#v}; fi &&
+          echo "${WORKFLOW/@TAG@/${tag_name}}" > .github/workflows/crate-dist.yml &&
           git add .github/workflows/crate-dist.yml &&
           git commit -m "Replace workflows" &&
           git push git@github.com:${{ github.repository }} HEAD:${tag} || exit 1
