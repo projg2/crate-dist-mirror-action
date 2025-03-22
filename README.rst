@@ -26,6 +26,10 @@ directories
   Space-separated list of directories to pass to pycargoebuild.
   Defaults to ``.`` (i.e. the top directory of the repository).
 
+tag-filter
+  Bash pattern used to filter processed tags (matched against tag name,
+  without ``refs/tags/``).  The default is ``*``, i.e. match all tags.
+
 upstream-repo
   URL to the upstream repository. Needed only when mirroring a non-GitHub
   repository. When unset, the "parent" for the current repository will
