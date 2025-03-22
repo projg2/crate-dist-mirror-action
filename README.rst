@@ -40,27 +40,31 @@ Usage
 
    b. Otherwise, use the "Import repository" function to create it.
 
-2. Get a deployment SSH key. You can either create a dedicated deployment key
-   for the repository, or create a bot account with an associated key.
+2. If the action is not being hosted in ``gentoo-crate-dist`` GitHub
+   organization:
 
-3. Add the public SSH key as deployment key for the repository with write
-   access, or give the bot user write access.
+   a. Get a deployment SSH key. You can either create a dedicated deployment
+      key for the repository, or create a bot account with an associated key.
 
-4. Add an Actions secret with the private SSH key.
+   b. Add the public SSH key as deployment key for the repository with write
+      access, or give the bot user write access.
 
-5. Create a new empty branch for the workflow::
+   c. Add an Actions secret with the private SSH key.
+
+3. Create a new empty branch for the workflow::
 
        git checkout --orphan crate-dist
        git reset --hard
 
-6. Create a GitHub workflow for the mirroring (see `Example workflow`_),
+4. Create a GitHub workflow for the mirroring (see `Example workflow`_),
    commit it and push it.
 
-7. Switch the default branch on the repository to your newly created branch
-   (e.g. ``crate-dist``) and enable Actions.
+5. Switch the default branch on the repository to your newly created branch
+   (e.g. ``crate-dist``) and enable Actions.  This is necessary for scheduled
+   jobs to run.
 
-8. If you want crate dist created for an existing tag, remove it from
-   the mirror.
+6. If you want crate dist created for an existing tag, remove it from
+   the mirror, and rerun the job.
 
 
 Example workflow
@@ -72,6 +76,7 @@ Example workflow
     on:
       schedule:
         - cron: "12 * * * *"
+      push:
 
     jobs:
       sync-mirror:
