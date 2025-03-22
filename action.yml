@@ -8,6 +8,9 @@ inputs:
   directories:
     description: Directories with Cargo.toml files to process
     default: .
+  run-cargo-update:
+    description: Run "cargo update" in top-level directory
+    default: false
   tag-filter:
     description: Bash pattern used to filter processed tags (matched against tag name, without "refs/tags/")
     default: "*"
@@ -66,6 +69,7 @@ runs:
                 with:
                   directories: ${{ inputs.directories }}
                   dist-filename: ${{ github.event.repository.name }}-@TAG@-crates.tar.xz
+                  run-cargo-update: ${{ inputs.run-cargo-update }}
         "
         while read tag; do
           git fetch upstream "${tag}" || exit 1

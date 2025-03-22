@@ -26,6 +26,10 @@ directories
   Space-separated list of directories to pass to pycargoebuild.
   Defaults to ``.`` (i.e. the top directory of the repository).
 
+run-cargo-update
+  If ``true``, ``cargo update`` will be called in top-level directory
+  to create or update ``Cargo.lock``.  Defaults to ``false``.
+
 tag-filter
   Bash pattern used to filter processed tags (matched against tag name,
   without ``refs/tags/``).  The default is ``*``, i.e. match all tags.
