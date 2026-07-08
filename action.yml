@@ -16,6 +16,9 @@ inputs:
     default: "*"
   upstream-repo:
     description: URL to fetch upstream repository from (the default is to query GitHub)
+  crate-dist-action:
+    description: Path and ref of the crate-dist action to use
+    default: "projg2/crate-dist-action@v1"
 runs:
   using: composite
   steps:
@@ -65,7 +68,7 @@ runs:
               contents: write
             steps:
               - name: Create crate dist
-                uses: projg2/crate-dist-action@v1
+                uses: ${{ inputs.crate-dist-action }}
                 with:
                   directories: ${{ inputs.directories }}
                   dist-filename: ${{ github.event.repository.name }}-@TAG@-crates.tar.xz
