@@ -85,6 +85,7 @@ Example workflow
       schedule:
         - cron: "12 * * * *"
       push:
+      workflow_dispatch:
 
     jobs:
       sync-mirror:
